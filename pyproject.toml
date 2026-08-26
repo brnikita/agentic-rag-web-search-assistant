@@ -51,6 +51,9 @@ python_version = "3.12"
 packages = ["agent"]
 mypy_path = "src"
 ignore_missing_imports = true
+# Without the plugin, mypy derives __init__ from pydantic field aliases and
+# reports every unset optional as a missing required argument.
+plugins = ["pydantic.mypy"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
