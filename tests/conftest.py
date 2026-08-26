@@ -26,3 +26,13 @@ def settings(tmp_path: Path) -> Settings:
         vector_store_dir=tmp_path / "chroma",
         collection_name="test_docs",
     )
+
+
+@pytest.fixture(autouse=True)
+def _reset_injected_failures():
+    """Injected tool failures are module-level; never let one leak into the next test."""
+    from agent.tools.base import reset_failures
+
+    reset_failures()
+    yield
+    reset_failures()
