@@ -1,0 +1,57 @@
+[project]
+name = "provectus-agentic-task"
+version = "0.1.0"
+description = "LangGraph agent with web search and internal docs search tools"
+requires-python = ">=3.11"
+dependencies = [
+    "langgraph>=0.2.60",
+    "langchain-core>=0.3.29",
+    "langchain-anthropic>=0.3.0",
+    "langchain-tavily>=0.1",
+    "langchain-chroma>=0.2",
+    "langchain-text-splitters>=0.3",
+    "fastembed>=0.5",
+    "pydantic-settings>=2.7",
+    "python-dotenv>=1.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.3",
+    "pytest-asyncio>=0.25",
+    "ruff>=0.9",
+    "mypy>=1.14",
+    "langgraph-cli[inmem]>=0.1.71",
+]
+
+[project.scripts]
+agent-chat = "agent.cli:main"
+agent-ingest = "agent.retrieval.ingest:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/agent"]
+
+[tool.ruff]
+line-length = 100
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+
+[tool.mypy]
+# 3.12 rather than 3.11: numpy ships stubs using 3.12-only `type` statements
+# that mypy refuses to parse under a lower target. Our own code stays 3.11-safe
+# (ruff's `UP` rules are pinned to requires-python).
+python_version = "3.12"
+packages = ["agent"]
+mypy_path = "src"
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+asyncio_mode = "auto"
