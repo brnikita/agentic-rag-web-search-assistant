@@ -66,7 +66,13 @@ right tool.
   `lru_cache` key — it raises `TypeError` at the first real-mode call, and
   neither ruff nor mypy catches it. Memoise on the specific fields instead
   (see `tools/__init__.py`).
-- **The model takes no `thinking` parameter.** Anthropic requires
+- **`llm.py` serves two providers behind one factory** (`AGENT_LLM_PROVIDER`).
+  Model defaults live in `config.DEFAULT_MODELS`, credentials in
+  `config.API_KEY_VARS`; add a provider by extending both plus the branch in
+  `build_llm`. A missing key raises there, *not* inside a node — a node would
+  catch it and emit a generic fallback, hiding an unset env var.
+- **OpenAI uses `max_completion_tokens`, Anthropic uses `max_tokens`.**
+- **The model takes no `thinking` parameter (Anthropic).** Anthropic requires
   `temperature=1` when extended thinking is on, and routing runs at
   `temperature=0`. The two are mutually exclusive.
 - **`ChatAnthropic` kwargs need the pydantic mypy plugin** (enabled in

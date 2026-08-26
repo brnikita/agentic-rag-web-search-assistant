@@ -19,7 +19,8 @@ def main() -> None:
     thread_id = str(uuid.uuid4())
 
     print(
-        f"Agent ready ({settings.model_name}, tools={settings.tool_mode}). "
+        f"Agent ready ({settings.resolved_model()} via {settings.llm_provider}, "
+        f"tools={settings.tool_mode}). "
         "Ctrl-C or an empty line to quit.\n"
     )
     while True:

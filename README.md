@@ -18,8 +18,17 @@ START ─▶ analyze ─┬─▶ rag_search ─┬─▶ web_search ─┐
 
 ```bash
 uv sync --extra dev
-cp .env.example .env      # add ANTHROPIC_API_KEY
+cp .env.example .env      # add the key for your provider
 ```
+
+## LLM provider
+
+Anthropic by default; `AGENT_LLM_PROVIDER=openai` switches. Each provider has its own default model, overridable with `AGENT_MODEL_NAME`.
+
+| Provider | Default model | Key |
+| --- | --- | --- |
+| `anthropic` | `claude-sonnet-4-6` | `ANTHROPIC_API_KEY` |
+| `openai` | `gpt-5.6-luna` | `OPENAI_API_KEY` |
 
 Tools are **mocked by default** — deterministic in-memory corpora, no keys and
 no infrastructure. The whole test suite runs offline.
@@ -60,7 +69,8 @@ SDKs read them directly.
 | Setting | Default | Purpose |
 | --- | --- | --- |
 | `AGENT_TOOL_MODE` | `mock` | `mock` or `real` |
-| `AGENT_MODEL_NAME` | `claude-sonnet-4-6` | Routing and synthesis |
+| `AGENT_LLM_PROVIDER` | `anthropic` | `anthropic` or `openai` |
+| `AGENT_MODEL_NAME` | per provider | Routing and synthesis |
 | `AGENT_MAX_TOOL_CALLS_PER_TURN` | `4` | Circuit breaker, per turn |
 | `AGENT_MAX_TOOL_CALLS_PER_THREAD` | `40` | Circuit breaker, thread lifetime |
 | `AGENT_MAX_ERROR_COUNT` | `2` | Tool errors before giving up |

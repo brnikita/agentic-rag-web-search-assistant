@@ -15,6 +15,7 @@ dependencies = [
     "tenacity>=8",
     "structlog>=24",
     "python-dotenv>=1.0",
+    "langchain-openai>=1.6.0",
 ]
 
 [project.optional-dependencies]

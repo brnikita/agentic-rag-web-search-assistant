@@ -16,6 +16,10 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
+# Each provider's default model, and the env var its SDK reads for credentials.
+DEFAULT_MODELS = {"anthropic": "claude-sonnet-4-6", "openai": "gpt-5.6-luna"}
+API_KEY_VARS = {"anthropic": "ANTHROPIC_API_KEY", "openai": "OPENAI_API_KEY"}
+
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
@@ -26,7 +30,9 @@ class Settings(BaseSettings):
     )
 
     # --- LLM -------------------------------------------------------------
-    model_name: str = "claude-sonnet-4-6"
+    llm_provider: Literal["anthropic", "openai"] = "anthropic"
+    # None means "use this provider's default"; set AGENT_MODEL_NAME to pin one.
+    model_name: str | None = None
     # 0 for reproducible routing. Note this rules out extended thinking:
     # Anthropic requires temperature=1 whenever thinking is enabled.
     temperature: float = 0.0
@@ -56,6 +62,14 @@ class Settings(BaseSettings):
     checkpointer: Literal["memory", "postgres"] = "memory"
     postgres_dsn: str | None = None
     recursion_limit: int = 25
+
+    def resolved_model(self) -> str:
+        """The model id to call: an explicit override, else the provider default."""
+        return self.model_name or DEFAULT_MODELS[self.llm_provider]
+
+    def api_key_var(self) -> str:
+        """The env var this provider's SDK reads its credentials from."""
+        return API_KEY_VARS[self.llm_provider]
 
 
 @lru_cache(maxsize=1)
