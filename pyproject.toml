@@ -1,7 +1,7 @@
 [project]
 name = "provectus-agentic-task"
 version = "0.1.0"
-description = "LangGraph agent with web search and internal docs search tools"
+description = "Agentic RAG + web search assistant built on LangGraph"
 requires-python = ">=3.11"
 dependencies = [
     "langgraph>=0.2.60",
@@ -12,6 +12,8 @@ dependencies = [
     "langchain-text-splitters>=0.3",
     "fastembed>=0.5",
     "pydantic-settings>=2.7",
+    "tenacity>=8",
+    "structlog>=24",
     "python-dotenv>=1.0",
 ]
 
@@ -25,7 +27,6 @@ dev = [
 ]
 
 [project.scripts]
-agent-chat = "agent.cli:main"
 agent-ingest = "agent.retrieval.ingest:main"
 
 [build-system]

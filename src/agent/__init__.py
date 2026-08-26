@@ -1,5 +1,5 @@
-"""LangGraph agent with web search and internal docs search tools."""
+"""Agentic RAG + web search assistant."""
 
-from agent.graph import build_graph, make_graph
+from agent.state import AgentState, Document
 
-__all__ = ["build_graph", "make_graph"]
+__all__ = ["AgentState", "Document"]

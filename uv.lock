@@ -2871,6 +2871,8 @@ dependencies = [
     { name = "langgraph" },
     { name = "pydantic-settings" },
     { name = "python-dotenv" },
+    { name = "structlog" },
+    { name = "tenacity" },
 ]
 
 [package.optional-dependencies]
@@ -2898,6 +2900,8 @@ requires-dist = [
     { name = "pytest-asyncio", marker = "extra == 'dev'", specifier = ">=0.25" },
     { name = "python-dotenv", specifier = ">=1.0" },
     { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.9" },
+    { name = "structlog", specifier = ">=24" },
+    { name = "tenacity", specifier = ">=8" },
 ]
 provides-extras = ["dev"]
 
