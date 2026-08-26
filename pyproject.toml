@@ -27,6 +27,7 @@ dev = [
 ]
 
 [project.scripts]
+agent-chat = "agent.cli:main"
 agent-ingest = "agent.retrieval.ingest:main"
 
 [build-system]
