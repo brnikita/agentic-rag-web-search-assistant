@@ -11,6 +11,7 @@ from __future__ import annotations
 import structlog
 from langchain_core.messages import AIMessage, SystemMessage
 
+from agent.citations import validate_citations
 from agent.config import Settings, get_settings
 from agent.llm import build_llm, build_router
 from agent.prompts import ANALYZE_PROMPT, NO_SOURCES, SYNTH_PROMPT
@@ -122,14 +123,18 @@ def format_sources(documents: list[Document]) -> str:
 def synthesize(state: AgentState, settings: Settings | None = None) -> dict:
     """Answer from the gathered evidence, with numbered citations."""
     settings = settings or get_settings()
-    sources = format_sources(state.get("documents", []))
+    documents = state.get("documents", [])
+    sources = format_sources(documents)
     try:
         llm = build_llm(settings)
         messages = [
             SystemMessage(SYNTH_PROMPT.format(sources=sources)),
             *state["messages"][-SYNTH_HISTORY:],
         ]
-        return {"messages": [llm.invoke(messages)]}
+        answer = llm.invoke(messages)
+        # A prompt cannot guarantee the contract; enforce it on the way out.
+        answer.content = validate_citations(str(answer.content), documents)
+        return {"messages": [answer]}
     except Exception as exc:
         log.error("synthesize_failed", error=str(exc))
         # Trip the breaker so the graph routes on to `fallback`.
