@@ -36,3 +36,20 @@ def _reset_injected_failures():
     reset_failures()
     yield
     reset_failures()
+
+
+@pytest.fixture
+def patch_llm(monkeypatch):
+    """Replace both LLM calls in `agent.nodes`. Returns the fake chat model."""
+
+    def _patch(*, decisions=(), answers=()):
+        import agent.nodes as nodes_module
+        from helpers import FakeChat, FakeRouter
+
+        chat = FakeChat(answers)
+        router = FakeRouter(decisions)
+        monkeypatch.setattr(nodes_module, "build_llm", lambda settings: chat)
+        monkeypatch.setattr(nodes_module, "build_router", lambda llm: router)
+        return chat
+
+    return _patch
